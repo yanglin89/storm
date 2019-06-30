@@ -176,7 +176,7 @@ public class LocalWordCountHbaseStormTopology {
                 .withRowKeyField("word")   // hbase 表的 rowkey ，此处我们使用的是上一步 bolt 中declare 的 word 的字段
                 .withColumnFields(new Fields("word"))  // hbase 的cf 中的字段名
                 .withCounterFields(new Fields("count"))  // hbase 的cf 中的字段名
-                .withColumnFamily("cf");  // hbase 的cf
+                .withColumnFamily("cf");  // hbase 的cf 名称
 
         /**
          * 此处要设置 ConfigKey 为hbase 的配置文件的 key

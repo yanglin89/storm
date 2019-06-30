@@ -29,7 +29,8 @@ public class LogProcessBolt extends BaseRichBolt {
 
         try{
             /**
-             * kafka 0.8 采用 bytes这种方式获取
+             * kafka 0.8 采用 getBinaryByField("bytes") 这种方式从kafka 获取数据
+             * 其中 bytes 是源码里面的固定写法
              */
 //            byte[] binaryByField = input.getBinaryByField("bytes");
 //            String value = new String(binaryByField);
@@ -38,10 +39,17 @@ public class LogProcessBolt extends BaseRichBolt {
             /**
              * kafka 0.10+ 采用 getValues() 来获取数据
              */
-            String value = input.getValue(4).toString();
+            String tmp = input.getValue(4).toString();
+            String tmp2 = tmp.substring(tmp.indexOf(" ") + 1);
+            String value = tmp2.substring(tmp.indexOf(" ") + 1);
             System.out.println("value ===============>" + value);
-            String value1 = input.getValues().toString();
-            System.out.println("value ===============>" + value1);
+            String value4 = input.getValue(4).toString();
+            System.out.println("value ===============>" + value4);
+            String valueAll = input.getValues().toString();
+            System.out.println("value ===============>" + valueAll);
+
+            String[] splits = value.split("\t");
+            System.out.println(splits[0]);
 
             this.collector.ack(input);
         } catch (Exception e){
@@ -51,8 +59,16 @@ public class LogProcessBolt extends BaseRichBolt {
 
     }
 
+
+
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
 
+    }
+
+
+    public static void main(String[] args) {
+        String test = "sss fd asd";
+        System.out.println(test.substring(test.indexOf(" ") + 1));
     }
 }

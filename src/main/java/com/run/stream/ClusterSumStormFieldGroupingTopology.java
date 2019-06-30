@@ -120,7 +120,8 @@ public class ClusterSumStormFieldGroupingTopology {
          */
         TopologyBuilder builder = new TopologyBuilder();
         builder.setSpout("dataSourceSpot",new DataSourceSpot());
-        builder.setBolt("sumBolt",new SumBolt(),1).fieldsGrouping("dataSourceSpot",new Fields("flag"));
+        builder.setBolt("sumBolt",new SumBolt(),1)
+                .fieldsGrouping("dataSourceSpot",new Fields("flag"));
 
 
         /**

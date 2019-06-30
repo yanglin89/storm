@@ -60,6 +60,21 @@ public class ClusterSumStormWorksTopology {
             Utils.sleep(2000);
         }
 
+        @Override
+        public void ack(Object msgId) {
+            System.out.println(" ack invoked ..." + msgId);
+        }
+
+        @Override
+        public void fail(Object msgId) {
+            System.out.println(" fail invoked ..." + msgId);
+
+            // TODO... 此处对失败的数据进行重发或者保存下来
+            // this.collector.emit(tuple)
+            // this.dao.saveMsg(msgId)
+
+        }
+
         /**
          * 声明输出字段的名称
          * @param outputFieldsDeclarer
@@ -77,7 +92,7 @@ public class ClusterSumStormWorksTopology {
      * bolt 接受数据并处理
      */
     public static class SumBolt extends BaseRichBolt {
-
+        private OutputCollector collector;
         /**
          *  初始化方法，被执行一次
          * @param map
@@ -86,7 +101,7 @@ public class ClusterSumStormWorksTopology {
          */
         @Override
         public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
-
+            this.collector = outputCollector;
         }
 
         int sum = 0;
@@ -102,6 +117,24 @@ public class ClusterSumStormWorksTopology {
             Integer value = tuple.getIntegerByField("num");
             sum += value;
             System.out.println("bolt : " + sum);
+
+            // 假设大于10的就是失败
+            if(value > 0 && value <= 10) {
+                this.collector.ack(tuple); // 确认消息处理成功
+            } else {
+                this.collector.fail(tuple);  // 确认消息处理失败
+            }
+
+
+            /**
+             * 实际生产中应该 try catch，在里面执行业务逻辑
+             */
+//            try {
+//                // TODO... 你的业务逻辑
+//                this.collector.ack(input);
+//            } catch (Exception e) {
+//                this.collector.fail(input);
+//            }
         }
 
         @Override

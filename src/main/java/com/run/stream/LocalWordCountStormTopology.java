@@ -41,7 +41,7 @@ public class LocalWordCountStormTopology {
         @Override
         public void nextTuple() {
 
-            // 获取所有文件
+            // 获取所有文件，限定只获取 txt 和 json 格式的文件
             Collection<File> files =  FileUtils.listFiles(
                     new File("E:\\study_data\\storm"),new String[]{"txt","json"},true);
             for(File file : files){
